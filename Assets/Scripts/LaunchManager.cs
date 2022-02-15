@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class LaunchManager : MonoBehaviour
 {
@@ -86,6 +87,6 @@ public class LaunchManager : MonoBehaviour
     // スタートボタン押下
     public void PushStartButton()
     {
-        // スタートボタン押下時の処理を書く！！
+        SceneManager.LoadScene("House");
     }
 }
