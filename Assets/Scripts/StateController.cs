@@ -100,7 +100,11 @@ public class StateController : BaseButtonController
       }
       camera.transform.position = Vector3.Lerp(startState.position, targetState.position, t / TRANSITION_TIME);
       camera.transform.rotation = Quaternion.Lerp(startState.posture, targetState.posture, t / TRANSITION_TIME);
-      if (t > TRANSITION_TIME) transitionFlag = false;
+      if (t > TRANSITION_TIME)
+      {
+        transitionFlag = false;
+        GameObject.Find("Canvas").transform.Find(targetState.panel).gameObject.SetActive(true);
+      }
     }
     else
     {
@@ -141,7 +145,6 @@ public class StateController : BaseButtonController
   private void FolderButtonClick()
   {
     ChangeState(stateStack.Peek(), StateName.FOLDER);
-
   }
 
   private void DeskButtonClick()
@@ -172,6 +175,7 @@ public class StateController : BaseButtonController
     stateStack.Push(target);
     startState = GetState(start);
     targetState = GetState(target);
+    GameObject.Find(start + "Panel").SetActive(false);
     transitionFlag = true;
   }
 
