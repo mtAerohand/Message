@@ -7,6 +7,7 @@ public class StateController : BaseButtonController
 {
   // 定数
   private const float TRANSITION_TIME = 0.2f;
+  private static List<string> STATE_NAME_LIST {get {return new List<string>() {StateName.ROOT, StateName.FOLDER, StateName.DESK, StateName.MAILBOX};}}
 
 // 後でscriptableobjectにしよう
   private static class StateName
@@ -58,20 +59,57 @@ public class StateController : BaseButtonController
       this.position = position;
       this.posture = posture;
     }
-
-    public static State Null()
-    {
-      return new State("", new Vector3(999, 999, 999), Quaternion.Euler(Vector3.zero));
-    }
   }
 
   // 変数
   private Stack<string> stateStack = new Stack<string>();
+  private bool transitionFlag;
+  private State startState;
+  private State targetState;
+  private float t;
+  private Camera camera;
+
+  // デフォルトのパブリックメソッド
 
   public void Start()
   {
     stateStack.Push(StateName.ROOT);
+    transitionFlag = false;
+    camera = Camera.main;
+    foreach (string name in STATE_NAME_LIST)
+    {
+      if (name == StateName.ROOT)
+      {
+        GameObject.Find(name + "Panel").SetActive(true);
+      }
+      else
+      {
+        GameObject.Find(name + "Panel").SetActive(false);
+      }
+    }
   }
+
+  public void Update()
+  {
+    if (transitionFlag)
+    {
+      t += Time.deltaTime;
+      if (startState == null || targetState == null)
+      {
+        Debug.LogError("ステートが設定されてないよ！");
+      }
+      camera.transform.position = Vector3.Lerp(startState.position, targetState.position, t / TRANSITION_TIME);
+      camera.transform.rotation = Quaternion.Lerp(startState.posture, targetState.posture, t / TRANSITION_TIME);
+      if (t > TRANSITION_TIME) transitionFlag = false;
+    }
+    else
+    {
+      t = 0;
+      transitionFlag = false;
+    }
+  }
+
+  // ボタン関係
 
   protected override void OnClick(string objectName)
   {
@@ -103,6 +141,7 @@ public class StateController : BaseButtonController
   private void FolderButtonClick()
   {
     ChangeState(stateStack.Peek(), StateName.FOLDER);
+
   }
 
   private void DeskButtonClick()
@@ -131,17 +170,9 @@ public class StateController : BaseButtonController
   private void ChangeState(string start, string target)
   {
     stateStack.Push(target);
-    State startState = GetState(start);
-    State targetState = GetState(target);
-    Camera camera = Camera.main;
-    float t = Time.time;
-    while (true)
-    {
-      float diff = (Time.time - t) / TRANSITION_TIME;
-      camera.transform.position = Vector3.Lerp(startState.position, targetState.position, diff);
-      camera.transform.rotation = Quaternion.Lerp(startState.posture, targetState.posture, diff);
-      if (diff > 1f) break;
-    }
+    startState = GetState(start);
+    targetState = GetState(target);
+    transitionFlag = true;
   }
 
   private State GetState(string state)
@@ -158,7 +189,7 @@ public class StateController : BaseButtonController
         return new State(MailBoxState.PANEL, MailBoxState.POSITION, MailBoxState.POSTURE);
       default:
         Debug.LogError("ステートが存在しないよ");
-        return State.Null();
+        return new State("", new Vector3(999, 999, 999), Quaternion.Euler(Vector3.zero));
     }
   }
 }
