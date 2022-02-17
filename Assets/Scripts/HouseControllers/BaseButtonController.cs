@@ -9,7 +9,7 @@ public class BaseButtonController : MonoBehaviour
 
     public void OnClick()
     {
-      if (button == null) throw new System.Exception("ボタンインスタンスが存在していない");
+      if (button == null) throw new System.Exception("BaseButtonController/OnClick(): ボタンインスタンスが存在していない");
       button.OnClick(this.gameObject.name);
     }
 
