@@ -69,7 +69,6 @@ public class LaunchManager : MonoBehaviour
         }
         else if (registUserNameText.text.Length > 10)
         {
-            // ユーザ名が５文字以上の場合
             registMsgText.text = "10文字以内で入力してね";
         }
         else

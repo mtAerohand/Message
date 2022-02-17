@@ -2,49 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using GameUtil.HouseState;
 
 public class StateController : BaseButtonController
 {
-  // 定数
-  private const float TRANSITION_TIME = 0.2f;
-  private static List<string> STATE_NAME_LIST {get {return new List<string>() {StateName.ROOT, StateName.FOLDER, StateName.DESK, StateName.MAILBOX};}}
-
-// 後でscriptableobjectにしよう
-  private static class StateName
-  {
-    public const string ROOT = "Root";
-    public const string FOLDER = "Folder";
-    public const string DESK = "Desk";
-    public const string MAILBOX = "MailBox";
-  }
-
-  private static class RootState
-  {
-    public const string PANEL = "RootPanel";
-    public static Vector3 POSITION {get {return Vector3.zero;}}
-    public static Quaternion POSTURE {get {return Quaternion.Euler(Vector3.zero);}}
-  }
-
-  private static class FolderState
-  {
-    public const string PANEL = "FolderPanel";
-    public static Vector3 POSITION {get {return new Vector3(10f, 0f, 0f);}}
-    public static Quaternion POSTURE {get {return Quaternion.AngleAxis(90, Vector3.up);}}
-  }
-
-  private static class DeskState
-  {
-    public const string PANEL = "DeskPanel";
-    public static Vector3 POSITION {get {return new Vector3(0f, 10f, 0f);}}
-    public static Quaternion POSTURE {get {return Quaternion.AngleAxis(-90, Vector3.up);}}
-  }
-
-  private static class MailBoxState
-  {
-    public const string PANEL = "MailBoxPanel";
-    public static Vector3 POSITION {get {return new Vector3(0f, 0f, 10f);}}
-    public static Quaternion POSTURE {get {return Quaternion.AngleAxis(180, Vector3.up);}}
-  }
 
   private class State
   {
@@ -60,6 +21,10 @@ public class StateController : BaseButtonController
       this.posture = posture;
     }
   }
+  
+  // 定数
+  private const float TRANSITION_TIME = 0.2f;
+  private static List<string> STATE_NAME_LIST {get {return new List<string>() {StateName.ROOT, StateName.FOLDER, StateName.DESK, StateName.MAILBOX};}}
 
   // 変数
   private Stack<string> stateStack = new Stack<string>();
